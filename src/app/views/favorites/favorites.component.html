@@ -1,0 +1,17 @@
+
+  <app-title [title]="'Favorites'"></app-title>
+  <div *ngIf="favorites.length>0; else emptyFavorites">
+    <div nz-row nzJustify="center" [nzGutter]="[{ xs: 8, sm: 16, md: 24, lg: 32 },{ xs: 8, sm: 16, md: 24, lg: 32 }]">
+      <app-item nz-col [nzXs]="24" [nzSm]="12" [nzLg]="6"
+                *ngFor="let item of favorites"
+                [isAddBtn]="false"
+                [item]="item" (onRemovedFromFavorites)="onRemovedFromFavoritesEventHandler($event)"></app-item>
+    </div>
+  </div>
+  <ng-template #emptyFavorites>
+    <div class="fav-empty">
+        Empty
+    </div>
+  </ng-template>
+
+

@@ -1,0 +1,28 @@
+
+  <div class="search">
+    <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+      <input type="text" (keyup.enter)="searchHandler()" [(ngModel)]="search" nz-input placeholder="Search movie..."/>
+    </nz-input-group>
+    <ng-template #suffixIconButton>
+      <button (click)="searchHandler()" nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
+    </ng-template>
+  </div>
+  <app-title [title]="'What is popular today?'"></app-title>
+  <app-error *ngIf="error" [message]="error"></app-error>
+  <div class="main-content">
+      <div nz-row [nzGutter]="[{ xs: 8, sm: 16, md: 24, lg: 32 },{ xs: 8, sm: 16, md: 24, lg: 32 }]">
+        <app-item nz-col [nzXs]="24" [nzSm]="12" [nzLg]="6"
+                  *ngFor="let item of popularMovies.results"
+                  [item]="item"></app-item>
+      </div>
+      <app-loader *ngIf="isFetching"></app-loader>
+  </div>
+  <div class="main-pages">
+    <nz-pagination (nzPageIndexChange)="pageHandler($event)" [nzTotal]="popularMovies.total_results"
+                   [nzPageSize]="math.floor(popularMovies.total_results/popularMovies.total_pages)"
+                   [nzPageIndex]="popularMovies.page" [nzResponsive]="true" [nzHideOnSinglePage]="true" ></nz-pagination>
+  </div>
+
+
+
+

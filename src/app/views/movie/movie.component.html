@@ -1,0 +1,55 @@
+<app-title [title]="movieDetail?.title"></app-title>
+<div *ngIf="isFetching; else movie" class="movie">
+  <app-loader></app-loader>
+</div>
+<ng-template #movie>
+  <div nz-row [nzGutter]="[{ xs: 8, sm: 16, md: 24, lg: 32 },{ xs: 8, sm: 16, md: 24, lg: 32 }]">
+      <app-image nz-col [nzXs]="24" [nzSm]="12"  [src]="movieDetail.poster_path"></app-image>
+    <div class="movie-description" nz-col [nzXs]="24" [nzSm]="12">
+      <div >Genres:</div>
+      <div class="movie-genres movie-row">
+        <div *ngFor="let item of movieDetail.genres">{{item.name}}</div>
+      </div>
+      <div>
+        Overview:
+      </div>
+      <div >{{movieDetail.overview}}</div>
+      <div >Production companies:</div>
+      <div class="movie-row movie-company">
+        <div *ngFor="let item of movieDetail.production_companies" ><img [src]="item.logo_path"></div>
+      </div>
+      <div >Production countries:</div>
+      <div class="movie-row movie-genres">
+        <div *ngFor="let item of movieDetail.production_countries" >{{item.name}}</div>
+      </div>
+      <div>
+        <button nz-button nzType="primary"
+          (click)="addToFavoritesHandler()"
+          [disabled]="movieDetail.isFavorite">{{movieDetail.isFavorite ? 'Movie added' : 'Add to favorites' }}</button>
+      </div>
+      <div>
+        <div>
+          <span >Release date: </span>
+          <span class="movie-param">{{movieDetail.release_date}}</span>
+        </div>
+        <div >For adult: {{movieDetail.adult}}</div>
+        <div class="movie-tag">{{movieDetail.tagline}}</div>
+        <div>Runtime: {{movieDetail.runtime}} min.</div>
+        <div>Popularity: {{movieDetail.popularity}}</div>
+        <div>Average: {{movieDetail.vote_average}}</div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<app-error *ngIf="error" [message]="error"></app-error>
+<app-title [title]="'Recommendation'"></app-title>
+<div nz-row [nzGutter]="[{ xs: 8, sm: 16, md: 24, lg: 32 },{ xs: 8, sm: 16, md: 24, lg: 32 }]">
+  <app-item nz-col [nzXs]="24" [nzSm]="12" [nzLg]="6"
+            *ngFor="let item of recommendations.results"
+            [item]="item"></app-item>
+</div>
+
+
+
+
+

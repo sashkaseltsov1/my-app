@@ -1,0 +1,24 @@
+.image-wrapper{
+  max-height: 641px;
+  max-width: 428px;
+  overflow: hidden;
+  margin: 0 auto;
+
+}
+
+.image-wrapper>div{
+  padding-bottom:calc(641 / 428 * 100%);
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  width: 100%;
+}
+.image{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: auto;
+  top: 0;
+  right: 0;
+  width: 100%;
+}

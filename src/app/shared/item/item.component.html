@@ -1,0 +1,29 @@
+<div class="item">
+  <app-image [routerLink] = "'/movie/'+item?.id" [src]="item?.poster_path" class="item-image"></app-image>
+  <div class="item-wrapper">
+    <div class="item-title" [ngClass]="{'item-long': (item?.title.length > 40)}">
+      <a [routerLink] = "'/movie/'+item?.id">{{item?.title}}</a>
+    </div>
+    <div class="item-genres">
+      <div class="item-genre"
+           *ngFor="let genre of item.genres" >
+      <span>
+        {{genre.name}}
+      </span>
+      </div>
+    </div>
+    <div class="item-date">
+      <span>{{item?.release_date}}</span>
+    </div>
+    <button *ngIf="isAddBtn; else removeBtn"
+            nz-button nzType="primary"
+            (click)="addToFavoritesHandler()"
+            [disabled]="item.isFavorite">{{item?.isFavorite ? 'Movie added' : 'Add to favorites' }}</button>
+
+    <ng-template #removeBtn>
+      <button nz-button nzType="primary" nzDanger
+              (click)="removeFromFavoritesHandler()">Remove movie</button>
+    </ng-template>
+  </div>
+
+</div>

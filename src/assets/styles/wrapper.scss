@@ -1,0 +1,9 @@
+@import "src/assets/styles/vars";
+
+.wr-container{
+  max-width: 1200px;
+  margin: 0 auto;
+  @include large{
+    width: 96%;
+  }
+}

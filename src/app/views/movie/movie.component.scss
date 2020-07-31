@@ -1,0 +1,41 @@
+.movie{
+  position: relative;
+  min-height: 600px;
+}
+.movie-description{
+  display: flex;
+  flex-direction: column;
+  &>div:nth-child(2n+1){
+    text-align: center;
+    margin-bottom: 5px;
+  }
+  &>div:nth-child(2n){
+    margin-bottom: 10px;
+  }
+}
+.movie-row{
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.movie-genres{
+  &>div{
+    color: seagreen;
+    border: 1px dashed seagreen;
+    padding: 5px;
+    border-radius: 3px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
+}
+.movie-company>div{
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+.movie-tag{
+  text-decoration: underline cornflowerblue;
+}
+
+
+
