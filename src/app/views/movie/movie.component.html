@@ -4,7 +4,7 @@
 </div>
 <ng-template #movie>
   <div nz-row [nzGutter]="[{ xs: 8, sm: 16, md: 24, lg: 32 },{ xs: 8, sm: 16, md: 24, lg: 32 }]">
-      <app-image nz-col [nzXs]="24" [nzSm]="12"  [src]="movieDetail.poster_path"></app-image>
+    <app-image nz-col [nzXs]="24" [nzSm]="12"  [src]="movieDetail.poster_path"></app-image>
     <div class="movie-description" nz-col [nzXs]="24" [nzSm]="12">
       <div >Genres:</div>
       <div class="movie-genres movie-row">
@@ -33,10 +33,10 @@
           <span class="movie-param">{{movieDetail.release_date}}</span>
         </div>
         <div >For adult: {{movieDetail.adult}}</div>
-        <div class="movie-tag">{{movieDetail.tagline}}</div>
         <div>Runtime: {{movieDetail.runtime}} min.</div>
         <div>Popularity: {{movieDetail.popularity}}</div>
         <div>Average: {{movieDetail.vote_average}}</div>
+        <div class="movie-tag">{{movieDetail.tagline}}</div>
       </div>
     </div>
   </div>

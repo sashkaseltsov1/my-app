@@ -33,7 +33,7 @@ export class ApiService {
   getDetailMovieById(id: number): Observable<MovieWithDetails> {
     const movieUrl = `${this.url}movie/${id}?${this.apiKey}`;
     return this.http.get<MovieWithDetails>(movieUrl)
-      .pipe(map(movie => {
+      .pipe(map((movie) => {
         const companies = movie.production_companies
           .map(company => ({...company, logo_path: this.logoUrl + company.logo_path}));
         return {...movie, poster_path: this.imageUrl + movie.poster_path, production_companies: companies};

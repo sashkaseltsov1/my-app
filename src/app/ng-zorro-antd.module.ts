@@ -7,6 +7,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 
 import {en_US, NZ_I18N} from 'ng-zorro-antd/i18n';
 import {NZ_ICONS} from 'ng-zorro-antd/icon';
@@ -25,7 +26,8 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     NzMenuModule,
     NzInputModule,
     NzIconModule,
-    NzPaginationModule
+    NzPaginationModule,
+    NzDescriptionsModule
   ],
   providers: [ { provide: NZ_I18N, useValue: en_US }, { provide: NZ_ICONS, useValue: icons } ]
 })

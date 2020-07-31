@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {ApiService} from '../../services/api.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FavoritesService} from '../../services/favorites.service';
-import {map} from 'rxjs/operators';
-import {IsFavoriteMovieWithDetails, IsFavoriteMovieWithGenres, Movies} from 'src/assets/types/Movie';
+import {map, mergeMap, switchMap} from 'rxjs/operators';
+import {IsFavoriteMovieWithDetails, IsFavoriteMovieWithGenres, Movies, MovieWithDetails, MovieWithGenres} from 'src/assets/types/Movie';
+import {forkJoin, Observable} from 'rxjs';
 
 @Component({
   selector: 'app-movie',
@@ -29,33 +30,35 @@ export class MovieComponent implements OnInit {
     this.favoritesService.addToFavorites(this.movieDetail);
     this.movieDetail.isFavorite = true;
   }
+
   ngOnInit(): void {
     this.isFetching = true;
-    this.route.params.subscribe(params => {
-      this.fetchMovie(params.id);
-      this.fetchRecommendations(params.id);
-    });
+    this.route.params.pipe(
+      switchMap(params => {
+        return forkJoin([this.fetchMovie(params.id),
+          this.fetchRecommendations(params.id)]);
+      }),
+    ).subscribe(([movie, recommendations]) => {
+        this.isFetching = false;
+        this.movieDetail = movie;
+        this.recommendations = recommendations;
+      },
+      (error) => {
+        this.isFetching = false;
+        this.error = error?.message;
+      });
   }
-  fetchMovie(id: number): void {
-    this.http.getDetailMovieById(id)
+  fetchMovie(id: number): Observable<IsFavoriteMovieWithDetails> {
+    return this.http.getDetailMovieById(id)
       .pipe(map((movie): IsFavoriteMovieWithDetails => {
         const favorites = this.favoritesService.getFavorites();
         const isFav = !!favorites.filter((fav) => fav.id === movie.id).length;
         return {...movie, isFavorite: isFav};
-      }))
-      .subscribe(
-        (movie) => {
-          this.isFetching = false;
-          this.movieDetail = movie;
-        },
-        (error) => {
-          this.isFetching = false;
-          this.error = error?.message;
-        }
-      );
+      }));
   }
-  fetchRecommendations(id: number): void {
-    this.http.getRecommendationById(id)
+
+  fetchRecommendations(id: number): Observable<Movies<IsFavoriteMovieWithGenres>> {
+    return this.http.getRecommendationById(id)
       .pipe(map((item): Movies<IsFavoriteMovieWithGenres> => {
         const favorites = this.favoritesService.getFavorites();
         const results = item.results.map((movie) => {
@@ -63,10 +66,6 @@ export class MovieComponent implements OnInit {
           return {...movie, isFavorite: isFav};
         });
         return {...item, results};
-      }))
-      .subscribe(
-        (item) => {
-          this.recommendations = item;
-        });
+      }));
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ApiService} from '../../services/api.service';
 import {IsFavoriteMovieWithGenres, Movies, MovieWithGenres} from '../../../assets/types/Movie';
 import {ActivatedRoute, Router} from '@angular/router';
-import {map} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 import {FavoritesService} from '../../services/favorites.service';
 
 @Component({
@@ -39,33 +39,38 @@ export class MainComponent implements OnInit {
       this.fetchData();
     }
   }
-  fetchData(): void{
-    this.route.queryParams.subscribe(params => {
+
+  fetchData(): void {
+    this.route.queryParams.pipe(switchMap(params => {
       this.popularMovies.page = params.page ? params.page : 1;
       this.search = params.query ? params.query : '';
       this.isFetching = true;
-      this.http.getMovies(this.search, this.popularMovies.page)
-        .pipe(map((item): Movies<IsFavoriteMovieWithGenres> => {
-          const favorites = this.favoritesService.getFavorites();
-          const results = item.results.map((movie) => {
-            const isFav = !!favorites.filter((fav) => fav.id === movie.id).length;
-            return {...movie, isFavorite: isFav};
-          });
-          return {...item, results};
-        }))
-        .subscribe(
+      return this.http.getMovies(this.search, this.popularMovies.page);
+    }))
+      .pipe(map((item): Movies<IsFavoriteMovieWithGenres> => {
+        const favorites = this.favoritesService.getFavorites();
+        const results = item.results.map((movie) => {
+          const isFav = !!favorites.filter((fav) => fav.id === movie.id).length;
+          return {...movie, isFavorite: isFav};
+        });
+        return {...item, results};
+      }))
+      .subscribe(
         (item) => {
           this.popularMovies = item;
           this.isFetching = false;
           window.scroll(0, 0);
-          if (this.isInit) { this.isInit = false; }
+          if (this.isInit) {
+            this.isInit = false;
+          }
         },
         (error) => {
           this.error = error?.message;
           this.isFetching = false;
-          if (this.isInit) { this.isInit = false; }
+          if (this.isInit) {
+            this.isInit = false;
+          }
         });
-    });
   }
   async searchHandler(): Promise<void> {
     const params = this.search ? {
