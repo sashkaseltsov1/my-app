@@ -15,10 +15,10 @@ import {map} from 'rxjs/operators';
 export class ApiService {
   constructor(private http: HttpClient) { }
 
-  private url = 'http://api.themoviedb.org/3/';
+  private url = 'https://api.themoviedb.org/3/';
   private apiKey = 'api_key=e7cb0935896346bde33f63f99fb42ead';
-  private imageUrl = 'http://image.tmdb.org/t/p/w342';
-  private logoUrl = 'http://image.tmdb.org/t/p/w45';
+  private imageUrl = 'https://image.tmdb.org/t/p/w342';
+  private logoUrl = 'https://image.tmdb.org/t/p/w45';
   getMovies(query = '', page = 1): Observable<Movies<MovieWithGenres> > {
     const genresUrl = `${this.url}genre/movie/list?${this.apiKey}`;
     const path = query ? 'search/movie' : 'movie/popular';

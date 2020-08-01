@@ -42,6 +42,7 @@ export class MovieComponent implements OnInit {
         this.isFetching = false;
         this.movieDetail = movie;
         this.recommendations = recommendations;
+        window.scroll(0, 0);
       },
       (error) => {
         this.isFetching = false;
