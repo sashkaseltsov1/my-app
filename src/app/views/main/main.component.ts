@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ApiService} from '../../services/api.service';
-import {IsFavoriteMovieWithGenres, Movies, MovieWithGenres} from '../../../assets/types/Movie';
+import {IsFavoriteMovieWithGenres, Movies} from '../../../assets/types/Movie';
 import {ActivatedRoute, Router} from '@angular/router';
-import {map, switchMap} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {FavoritesService} from '../../services/favorites.service';
 
 @Component({
@@ -30,53 +30,52 @@ export class MainComponent implements OnInit {
   ngOnInit(): void {
     this.fetchData();
   }
-  async pageHandler(page: number): Promise<void> {
+  pageHandler(page: number): void {
     if (!this.isInit){
       const params = this.search ? {
         query: this.search
       } : {};
-      await this.router.navigate(['.'], {queryParams: { ...params, page} });
-      this.fetchData();
+      this.router.navigate(['.'], {queryParams: { ...params, page} });
     }
   }
 
   fetchData(): void {
-    this.route.queryParams.pipe(switchMap(params => {
-      this.popularMovies.page = params.page ? params.page : 1;
-      this.search = params.query ? params.query : '';
-      this.isFetching = true;
+    this.route.queryParams.pipe(
+      tap(params => {
+        this.popularMovies.page = params.page ? params.page : 1;
+        this.search = params.query ? params.query : '';
+        this.isFetching = true;
+      }),
+      switchMap(_ => {
       return this.http.getMovies(this.search, this.popularMovies.page);
     }))
-      .pipe(map((item): Movies<IsFavoriteMovieWithGenres> => {
+      .pipe(
+        map((item): Movies<IsFavoriteMovieWithGenres> => {
         const favorites = this.favoritesService.getFavorites();
         const results = item.results.map((movie) => {
           const isFav = !!favorites.filter((fav) => fav.id === movie.id).length;
           return {...movie, isFavorite: isFav};
         });
         return {...item, results};
-      }))
+      }),
+        tap(_ => {
+          this.isFetching = false;
+          this.isInit = false;
+        })
+      )
       .subscribe(
         (item) => {
           this.popularMovies = item;
-          this.isFetching = false;
           window.scroll(0, 0);
-          if (this.isInit) {
-            this.isInit = false;
-          }
         },
         (error) => {
           this.error = error?.message;
-          this.isFetching = false;
-          if (this.isInit) {
-            this.isInit = false;
-          }
         });
   }
-  async searchHandler(): Promise<void> {
+  searchHandler(): void {
     const params = this.search ? {
       query: this.search
     } : {};
-    await this.router.navigate(['.'], {queryParams: params });
-    this.fetchData();
+    this.router.navigate(['.'], {queryParams: params });
   }
 }
